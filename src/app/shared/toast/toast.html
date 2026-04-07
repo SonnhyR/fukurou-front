@@ -1,0 +1,10 @@
+<div class="toast-container">
+  <div class="toast-card" *ngFor="let toast of toasts">
+    <div class="toast-icon">🦉</div>
+    <div class="toast-content">
+      <h4 class="toast-title">{{toast.title}}</h4>
+      <p class="toast-body">{{toast.message}}</p>
+    </div>
+    <button class="toast-close" (click)="close(toast.id)">&times;</button>
+  </div>
+</div>

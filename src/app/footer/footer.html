@@ -1,0 +1,80 @@
+<!-- footer.component.html -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-content">
+      <!-- Brand -->
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <span class="logo-icon">🦉</span>
+          <span class="logo-text">Fukurō</span>
+        </div>
+        <p class="footer-tagline">Donde las historias cobran vida. Juntas.</p>
+        
+        <div class="footer-social">
+          <a *ngFor="let social of socialLinks" [href]="social.link" class="social-link">
+            <span class="social-icon">{{social.icon}}</span>
+            <span class="social-platform">{{social.platform}}</span>
+          </a>
+        </div>
+      </div>
+      
+      <!-- Links -->
+      <div class="footer-links">
+        <div class="links-column">
+          <h4>Explorar</h4>
+          <ul>
+            <li><a href="#home">Inicio</a></li>
+            <li><a href="#character-ficha">Fichas de Personajes</a></li>
+            <li><a href="#webnovels">WebNovels</a></li>
+            <li><a href="#marketplace">Marketplace</a></li>
+            <li><a href="#tasks">Tareas</a></li>
+          </ul>
+        </div>
+        
+        <div class="links-column">
+          <h4>Recursos</h4>
+          <ul>
+            <li *ngFor="let resource of resources">
+              <a [href]="resource.link">{{resource.label}}</a>
+            </li>
+          </ul>
+        </div>
+        
+        <div class="links-column">
+          <h4>Compañía</h4>
+          <ul>
+            <li *ngFor="let link of quickLinks">
+              <a [href]="link.link">{{link.label}}</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      
+      <!-- Newsletter -->
+      <div class="footer-newsletter">
+        <h4>📬 Mantente actualizado</h4>
+        <p>Recibe noticias sobre nuevas funciones, concursos y actualizaciones.</p>
+        
+        <div class="newsletter-form">
+          <input type="email" placeholder="Tu correo electrónico">
+          <button class="btn-subscribe">Suscribirse</button>
+        </div>
+        
+        <p class="newsletter-note">Prometemos no enviar spam. Solo contenido valioso.</p>
+      </div>
+    </div>
+    
+    <!-- Copyright -->
+    <div class="footer-bottom">
+      <div class="copyright">
+        © {{currentYear}} Fukurō. Todos los derechos reservados.
+      </div>
+      
+      <div class="footer-extra">
+        <span>Hecho con ❤️ para la comunidad creativa</span>
+        <span class="separator">•</span>
+        <span>🦉 ¡Sigue escribiendo!</span>
+      </div>
+    </div>
+  </div>
+</footer>

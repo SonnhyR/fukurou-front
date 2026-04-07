@@ -1,0 +1,86 @@
+<nav class="navbar">
+  <div class="navbar-container">
+    <!-- Logo con link a home -->
+    <div class="navbar-brand">
+      <a routerLink="/" class="logo">
+        <span class="logo-icon">🦉</span>
+        <span class="logo-text">Fukurō</span>
+      </a>
+    </div>
+
+    <!-- Menú Desktop con routerLink -->
+    <div class="navbar-menu">
+      <a routerLink="/" class="nav-link">Inicio</a>
+      <a routerLink="/marketplace" class="nav-link">Marketplace</a>
+      
+      <div class="dropdown">
+        <span class="nav-link dropdown-toggle" style="cursor: pointer; padding-bottom: 0.5rem; border-bottom: 2px solid transparent; transition: border-color 0.2s;">
+          Explora <span style="font-size:0.8rem;">▼</span>
+        </span>
+        <div class="dropdown-menu" style="min-width: 220px; box-shadow: 0 10px 20px rgba(0,0,0,0.15);">
+          <a routerLink="/publishing" class="dropdown-item">📚 Libros Originales</a>
+          <a routerLink="/audiobooks" class="dropdown-item">🎙️ Audiolibros</a>
+          <a routerLink="/soundtrack" class="dropdown-item">🎵 Soundtracks</a>
+          <a routerLink="/webnovels" class="dropdown-item">🖼️ Webnovels</a>
+          <a routerLink="/fanfics" class="dropdown-item">🔄 Fanfics</a>
+          <a routerLink="/game-books" class="dropdown-item">🎮 Libros Juego</a>
+          <hr style="border:0; height:1px; background:#FFEBD7; margin:0.5rem 0;">
+          <a routerLink="/character-ficha" class="dropdown-item">🌟 Editor de Personajes</a>
+        </div>
+      </div>
+
+      <a routerLink="/tasks" class="nav-link">Tareas</a>
+      <a routerLink="/profile" class="nav-link">Mi Cuenta</a>
+
+      <!-- Selector de Rol -->
+      <div class="dropdown">
+        <span class="nav-link" style="cursor: pointer; background: rgba(255,152,0,0.15); padding: 0.3rem 0.6rem; border-radius: 6px; font-size: 0.9rem; font-weight: bold; border: 1px solid #FF9800;">
+          DEMO ROL: {{currentRole | titlecase}}
+        </span>
+        <div class="dropdown-menu" style="min-width: 140px;">
+          <a class="dropdown-item" style="cursor: pointer;" (click)="setRole('lector')">👁️ Lector</a>
+          <a class="dropdown-item" style="cursor: pointer;" (click)="setRole('autor')">✍️ Autor</a>
+          <a class="dropdown-item" style="cursor: pointer;" (click)="setRole('freelancer')">💼 Freelancer</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botones Auth -->
+    <div class="navbar-auth">
+      <a routerLink="/login" class="btn btn-outline-light" style="text-decoration:none;">Iniciar Sesión</a>
+      <a routerLink="/register" class="btn btn-primary" style="text-decoration:none;">Regístrate</a>
+      <button class="menu-toggle" (click)="toggleMenu()">
+        <span class="hamburger"></span>
+      </button>
+    </div>
+
+    <!-- Menú Mobile con routerLink -->
+    <div class="mobile-menu" [class.active]="isMenuOpen">
+      <div class="mobile-link" style="background: rgba(255,152,0,0.2); border-radius: 8px;">
+        <span style="display:block; margin-bottom: 0.5rem; font-weight: bold; font-size: 0.8rem; color:#FFD8B5;">ROL DEMO ACTUAL:</span>
+        <div style="display: flex; gap: 0.5rem;">
+          <button [style.background]="currentRole === 'lector' ? '#FF9800' : 'transparent'" [style.color]="currentRole === 'lector' ? '#5D4037' : '#FFEBD7'" style="border: 1px solid #FF9800; border-radius: 4px; padding: 0.2rem 0.5rem; font-size: 0.75rem;" (click)="setRole('lector')">Lector</button>
+          <button [style.background]="currentRole === 'autor' ? '#FF9800' : 'transparent'" [style.color]="currentRole === 'autor' ? '#5D4037' : '#FFEBD7'" style="border: 1px solid #FF9800; border-radius: 4px; padding: 0.2rem 0.5rem; font-size: 0.75rem;" (click)="setRole('autor')">Autor</button>
+          <button [style.background]="currentRole === 'freelancer' ? '#FF9800' : 'transparent'" [style.color]="currentRole === 'freelancer' ? '#5D4037' : '#FFEBD7'" style="border: 1px solid #FF9800; border-radius: 4px; padding: 0.2rem 0.5rem; font-size: 0.75rem;" (click)="setRole('freelancer')">Freelancer</button>
+        </div>
+      </div>
+      <a routerLink="/" class="mobile-link" (click)="toggleMenu()">Inicio</a>
+      <a routerLink="/marketplace" class="mobile-link" (click)="toggleMenu()">Marketplace</a>
+      
+      <div class="mobile-link" style="color: #FFD8B5; font-weight: 600;">Explora:</div>
+      <a routerLink="/publishing" class="mobile-link sub-link" (click)="toggleMenu()">- Libros</a>
+      <a routerLink="/audiobooks" class="mobile-link sub-link" (click)="toggleMenu()">- Audiolibros</a>
+      <a routerLink="/soundtrack" class="mobile-link sub-link" (click)="toggleMenu()">- Soundtracks</a>
+      <a routerLink="/webnovels" class="mobile-link sub-link" (click)="toggleMenu()">- WebNovels</a>
+      <a routerLink="/character-ficha" class="mobile-link sub-link" (click)="toggleMenu()">- Fichas de Personajes</a>
+      
+      <a routerLink="/tasks" class="mobile-link" (click)="toggleMenu()">Tareas</a>
+      <a routerLink="/profile" class="mobile-link" (click)="toggleMenu()">Mi Cuenta</a>
+
+      <div class="mobile-auth">
+        <a routerLink="/login" class="btn btn-outline-light" style="text-decoration:none; text-align:center;" (click)="toggleMenu()">Iniciar Sesión</a>
+        <a routerLink="/register" class="btn btn-primary" style="text-decoration:none; text-align:center;" (click)="toggleMenu()">Regístrate</a>
+      </div>
+    </div>
+  </div>
+</nav>

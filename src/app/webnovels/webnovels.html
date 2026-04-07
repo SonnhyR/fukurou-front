@@ -1,0 +1,61 @@
+<div class="webnovels-container">
+  <div class="catalog-header">
+    <h1>Catálogo de Webnovels</h1>
+    <p>Explora miles de historias gratuitas y premium escritas por nuestra comunidad.</p>
+    <div class="search-bar">
+      <input type="text" placeholder="Buscar título, autor o palabra clave..." class="search-input">
+      <button class="btn btn-primary search-btn">Buscar</button>
+    </div>
+  </div>
+
+  <div class="catalog-filters">
+    <div class="filter-group">
+      <label>Género</label>
+      <select class="filter-select">
+        <option>Todos los géneros</option>
+        <option>Fantasía</option>
+        <option>Romance</option>
+        <option>Ciencia Ficción</option>
+        <option>Misterio</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>Estado</label>
+      <select class="filter-select">
+        <option>Cualquier estado</option>
+        <option>Completado</option>
+        <option>En progreso</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>Ordenar por</label>
+      <select class="filter-select">
+        <option>Más Populares</option>
+        <option>Recientes</option>
+        <option>Mejor Valorados</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="books-grid">
+    <div class="book-card" *ngFor="let i of dummyBooks">
+      <div class="book-cover-small">
+        <span class="book-genre">Fantasía</span>
+      </div>
+      <div class="book-info">
+        <h3 class="book-title">Historia Reveladora {{i}}</h3>
+        <p class="book-author">por Autor Desconocido</p>
+        <div class="book-tags">
+          <span class="tag">Magia</span>
+          <span class="tag">Aventura</span>
+        </div>
+        <p class="book-synopsis">Una sinopsis breve de la historia que dejará al lector queriendo saber más sobre los misterios que aguardan. La trama se desenvuelve poco a poco.</p>
+        <div class="book-stats">
+          <span>⭐ 4.9</span>
+          <span>👁️ 10k</span>
+          <span>📜 120 cap</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

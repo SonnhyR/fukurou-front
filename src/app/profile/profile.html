@@ -1,0 +1,224 @@
+<!-- profile.component.html -->
+<section class="profile-section">
+  <div class="container">
+    <div class="section-header">
+      <h2>👤 Panel de Control ({{currentRole | titlecase}})</h2>
+      <p>Vista interactiva condicionalmente definida por tu rol Oficial temporal.</p>
+    </div>
+
+    <!-- Perfil del Usuario -->
+    <div class="profile-header">
+      <div class="profile-avatar" [style.background]="userProfile.avatarColor">
+        <div class="level-badge">Nv. {{userProfile.level}}</div>
+      </div>
+      
+      <div class="profile-info">
+        <div class="profile-main">
+          <h1 class="profile-name">{{userProfile.name}}</h1>
+          <p class="profile-username">{{userProfile.username}}</p>
+          <p class="profile-bio">{{userProfile.bio}}</p>
+          <p class="profile-join">Miembro dese {{userProfile.joinDate}}</p>
+        </div>
+        
+        <div class="profile-badges">
+          <span class="badge" *ngFor="let badge of userProfile.badges">{{badge}}</span>
+        </div>
+      </div>
+      <div style="flex-shrink: 0;">
+        <button class="btn btn-outline" style="border-color: #EF476F; color: #EF476F;" (click)="logout()">Cerrar Sesión</button>
+      </div>
+    </div>
+
+    <!-- Billetera (Feathers) -->
+    <app-wallet></app-wallet>
+
+    <!-- Estadísticas -->
+    <div class="profile-stats">
+      <div class="stats-grid">
+        <div class="stat-card" *ngFor="let stat of userStats">
+          <div class="stat-icon" [style.background]="stat.color + '20'">
+            <span [style.color]="stat.color">{{stat.icon}}</span>
+          </div>
+          <div class="stat-content">
+            <span class="stat-value">{{stat.value}}</span>
+            <span class="stat-label">{{stat.label}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pestañas de Funciones Dinámicas (NgSwitch) -->
+    <div class="profile-tabs">
+      <div class="tabs-header">
+        <div class="tabs-list">
+          <button class="tab-btn" 
+                  *ngFor="let tab of tabs"
+                  [class.active]="activeTab === tab.id"
+                  (click)="selectTab(tab.id)">
+            <span class="tab-icon">{{tab.icon}}</span>
+            <span class="tab-name">{{tab.name}}</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Contenido de Pestañas -->
+      <div class="tab-content" [ngSwitch]="activeTab">
+        
+        <!-- VISTAS COMUNES -->
+        <div *ngSwitchCase="'config'" style="padding: 2rem; background: white; border-radius: 12px;">
+          <h3>⚙️ Configuración de Cuenta</h3>
+          <p style="color: #795548; margin-bottom: 2rem;">Ajusta tus preferencias personales y notificaciones.</p>
+          <button class="btn btn-outline" (click)="showDemoToast('Cambiar Contraseña')">Cambiar Contraseña</button>
+          <button class="btn btn-outline" (click)="showDemoToast('Preferencias de Lectura')" style="margin-left: 1rem;">Preferencias de App</button>
+        </div>
+
+        <!-- =========== ROL: LECTOR =========== -->
+        <div *ngSwitchCase="'library'" style="display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));">
+          <div style="background: white; padding: 1rem; border-radius: 12px; text-align: center; border: 2px dashed #FFEBD7;" (click)="showDemoToast('Libro en biblioteca')">
+            <div style="height: 120px; background: #8B4513; border-radius: 8px; margin-bottom: 1rem;"></div>
+            <h4>El Último Hechicero</h4><p style="font-size: 0.8rem;">80% Completado</p>
+          </div>
+          <div style="background: white; padding: 1rem; border-radius: 12px; text-align: center; border: 2px dashed #FFEBD7;" (click)="showDemoToast('Libro en biblioteca')">
+            <div style="height: 120px; background: #118AB2; border-radius: 8px; margin-bottom: 1rem;"></div>
+            <h4>Reinos Perdidos</h4><p style="font-size: 0.8rem;">Leyendo</p>
+          </div>
+          <div style="background: white; padding: 1rem; border-radius: 12px; text-align: center; border: 2px dashed #FFEBD7;" (click)="showDemoToast('Libro en biblioteca')">
+            <div style="height: 120px; background: #FF9800; border-radius: 8px; margin-bottom: 1rem; display:flex; align-items:center; justify-content:center; font-size:2rem;">🎮</div>
+            <h4>La Fortaleza (Juego)</h4><p style="font-size: 0.8rem;">Decidiendo destino...</p>
+          </div>
+        </div>
+
+        <div *ngSwitchCase="'tbr'" style="display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));">
+          <div style="background: white; padding: 1rem; border-radius: 12px; border: 1px solid #E0E0E0;">
+             <div style="height: 140px; background: #5D4037; border-radius: 8px; margin-bottom: 0.5rem;"></div>
+             <h4 style="margin:0; font-size:1rem;">Noches de Sangre</h4><p style="font-size:0.8rem; color:#8B7355; margin:0.2rem 0;">Por leer</p>
+             <button class="btn btn-primary" style="width:100%; padding: 0.4rem; font-size: 0.8rem; margin-top:0.5rem;" (click)="showDemoToast('Leer Libro')">Comenzar</button>
+          </div>
+          <div style="background: white; padding: 1rem; border-radius: 12px; border: 1px solid #E0E0E0;">
+             <div style="height: 140px; background: #2E1911; border-radius: 8px; margin-bottom: 0.5rem;"></div>
+             <h4 style="margin:0; font-size:1rem;">Hilos del Destino</h4><p style="font-size:0.8rem; color:#8B7355; margin:0.2rem 0;">Por leer</p>
+             <button class="btn btn-primary" style="width:100%; padding: 0.4rem; font-size: 0.8rem; margin-top:0.5rem;" (click)="showDemoToast('Leer Libro')">Comenzar</button>
+          </div>
+        </div>
+
+        <div *ngSwitchCase="'lists'" style="display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));">
+           <div style="background: white; padding: 1rem; border-radius: 12px; border-left: 4px solid #FF9800;">
+             <h4 style="margin: 0 0 0.5rem 0;">Mis Favoritos Fantasía</h4>
+             <p style="font-size: 0.8rem; color: #8B7355; margin:0;">12 Libros • 3 Audiolibros</p>
+           </div>
+           <div style="background: white; padding: 1rem; border-radius: 12px; border-left: 4px solid #4CAF50;">
+             <h4 style="margin: 0 0 0.5rem 0;">Para Viajes Largos (Playlist)</h4>
+             <p style="font-size: 0.8rem; color: #8B7355; margin:0;">15 Pistas • Música de Taberna</p>
+           </div>
+        </div>
+
+        <div *ngSwitchCase="'services_bought'" style="background: white; border-radius: 12px; padding: 2rem;">
+           <h3 style="margin-top:0;">Historial de Servicios</h3>
+           <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #E0E0E0; padding: 1rem 0;">
+              <div>
+                 <strong>Diseño de Personaje a Color</strong>
+                 <div style="font-size: 0.85rem; color: #8B7355;">Freelancer: @art_master • Hace 2 semanas</div>
+              </div>
+              <span style="background: #4CAF50; color: white; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.8rem;">Completado</span>
+           </div>
+        </div>
+
+        <!-- =========== ROL: AUTOR =========== -->
+        <div class="works-grid" *ngSwitchCase="'works'">
+          <div class="work-card" *ngFor="let work of userWorks">
+            <div class="work-header">
+              <div class="work-type"><span class="type-icon">📚</span><span class="type-label">{{work.type === 'game-book' ? 'Libro Juego' : work.type === 'webnovel' ? 'Webnovel' : 'Novela'}}</span></div>
+              <span class="status-badge" style="background:#4CAF50">PUBLICADO</span>
+            </div>
+            <h3 class="work-title">{{work.title}}</h3>
+            <div class="work-stats">
+              <div class="work-stat"><span class="stat-icon">📖</span><span class="stat-value">{{work.chapters}}</span><span class="stat-label">cap.</span></div>
+              <div class="work-stat"><span class="stat-icon">👁️</span><span class="stat-value">{{work.readers}}</span></div>
+            </div>
+            <div class="work-actions" style="display: flex; gap: 0.5rem; justify-content: center; margin-top: 1rem;">
+              <button class="btn btn-primary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;" (click)="showDemoToast('Editar Obra')">✏️ Editar</button>
+              <button class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;" (click)="showDemoToast('Ver Estadísticas')">📊 Stats</button>
+            </div>
+          </div>
+          <div class="work-card create-new" (click)="showDemoToast('Crear Nueva Obra')">
+             <div class="create-icon">+</div>
+             <h3>Crear nueva obra</h3>
+          </div>
+          <div class="work-card create-new" (click)="showDemoToast('Crear Libro Juego')" style="border-color: #FF9800; color: #FF9800;">
+             <div class="create-icon">🎮</div>
+             <h3>Empezar Libro Juego</h3>
+          </div>
+        </div>
+
+        <div *ngSwitchCase="'characters'" style="display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));">
+          <div style="background: white; border-radius: 12px; padding: 1rem; display: flex; gap: 1rem; align-items: center;">
+             <div style="width: 60px; height: 60px; border-radius: 50%; background: #4ECDC4; flex-shrink: 0;"></div>
+             <div>
+                <h4 style="margin: 0;">Valerius Morte</h4>
+                <p style="margin: 0; font-size: 0.8rem; color: #8B7355;">Antagonista • Sombras del Amanecer</p>
+                <div style="margin-top: 0.5rem;">
+                   <button class="btn btn-outline" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;" (click)="showDemoToast('Ver PDF de Personaje')">Ver PDF</button>
+                </div>
+             </div>
+          </div>
+          <div class="work-card create-new" (click)="showDemoToast('Crear Ficha de Personaje')" style="min-height: 100px;">
+             <div class="create-icon" style="font-size: 1.5rem; width: 30px; height: 30px;">+</div>
+             <h3 style="font-size: 1rem;">Nueva Ficha</h3>
+          </div>
+        </div>
+
+        <div *ngSwitchCase="'playlists'" style="display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));">
+           <div style="background: white; border-radius: 12px; overflow: hidden; border: 1px solid #E0E0E0;">
+              <div style="height: 100px; background: linear-gradient(45deg, #118AB2, #06D6A0); display: flex; align-items:center; justify-content:center; font-size:2rem;">🎧</div>
+              <div style="padding: 1rem;">
+                 <h4 style="margin: 0 0 0.2rem 0;">Aura del Amanecer</h4>
+                 <p style="font-size: 0.8rem; color:#8B7355; margin:0 0 1rem 0;">Soundtrack Oficial</p>
+                 <button class="btn btn-outline btn-block" style="font-size:0.8rem; padding:0.4rem;" (click)="showDemoToast('Editar Playlist')">Modificar Pistas</button>
+              </div>
+           </div>
+        </div>
+
+        <div *ngSwitchCase="'fanfics'" style="background: white; padding: 2rem; border-radius: 12px;">
+           <h3 style="margin-top:0;">Obras Derivadas de tus Libros</h3>
+           <p style="font-size:0.9rem; color:#795548;">Permites que otros creen Fanfics: <span style="color:#4CAF50; font-weight:bold;">SÍ</span></p>
+           <hr style="border:0; height:1px; background:#f0f0f0;">
+           <div style="display:flex; justify-content:space-between; align-items:center; padding: 0.5rem 0;">
+              <div><strong>El Pasado de Valerius</strong> <span style="font-size:0.8rem; color:#8B7355;"> por @fan_girl99</span></div>
+              <button class="btn btn-primary" style="padding: 0.3rem 0.8rem; font-size: 0.8rem;" (click)="showDemoToast('Leer Fanfic')">Leer</button>
+           </div>
+        </div>
+
+        <div *ngSwitchCase="'earnings'" style="background: white; padding: 3rem; border-radius: 12px; text-align: center;">
+          <h1 style="color: #4CAF50; font-size: 3rem; margin-bottom: 1rem;">$340.50</h1>
+          <p style="color: #8B7355; margin-bottom: 2rem;">Ganancias de Febrero 2026</p>
+          <button class="btn btn-primary" (click)="showDemoToast('Visualizar Historial PDF')">Descargar Reporte</button>
+        </div>
+
+        <!-- =========== ROL: FREELANCER =========== -->
+        <div *ngSwitchCase="'freelance_services'" style="display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));">
+           <div style="background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+             <h4 style="color:#5D4037; font-size: 1.2rem; margin:0 0 0.5rem 0;">Diseño de Portadas (Fantasía)</h4>
+             <p style="color:#FF9800; font-weight: bold; margin-bottom: 1rem;">Desde $50 USD</p>
+             <p style="color:#795548; font-size: 0.9rem;">Ilustraciones personalizadas y tipografía premium para sagas de misterio y fantasía.</p>
+             <button class="btn btn-block" style="margin-top: 1rem; border: 1px solid #FF9800; background: transparent; color:#FF9800" (click)="showDemoToast('Modificar Oferta')">Modificar Oferta</button>
+           </div>
+           
+           <div class="work-card create-new" (click)="showDemoToast('Publicar Servicio Freelance')">
+             <div class="create-icon">+</div>
+             <h3>Ofrecer Servicio</h3>
+          </div>
+        </div>
+
+        <div *ngSwitchCase="'contracts'" style="background: white; border-radius: 12px; padding: 2rem;">
+          <h3>Contratos Pendientes (2)</h3>
+          <div style="border-left: 3px solid #2196F3; padding-left: 1rem; margin-top: 1rem;">
+             <h5>Editorial Amanecer - Corrección de Estilo</h5>
+             <span style="font-size: 0.8rem; color:#8B7355;">Entrega: 10 de Marzo</span>
+             <p style="margin-top:0.5rem;"><button class="btn btn-primary" style="padding: 0.3rem 1rem; font-size: 0.8rem;" (click)="showDemoToast('Entregar Archivos')">Subir Entregables</button></p>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</section>

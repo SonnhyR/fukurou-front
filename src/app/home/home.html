@@ -1,0 +1,141 @@
+<!-- Modal Demo Bienvenida -->
+<div class="demo-modal-overlay" *ngIf="showDemoModal">
+  <div class="demo-modal">
+    <div class="demo-modal-header">
+      <h2>¡Bienvenido a Fukurō! 🦉</h2>
+    </div>
+    <div class="demo-modal-body">
+      <p>Estás explorando una <strong>DEMO interactiva</strong>.</p>
+      <p>Los datos son de ejemplo. Puedes navegar por todas las funciones de forma libre, pero las acciones que requieren pago, publicación o guardado están simuladas.</p>
+      <div class="demo-modal-highlight">
+        👉 Prueba <strong>cambiar los roles DEMO</strong> desde el botón en la barra de navegación para evaluar la plataforma como Lector, Autor o Freelancer.
+      </div>
+    </div>
+    <div class="demo-modal-footer">
+      <button class="btn btn-primary btn-block" (click)="closeDemoModal()">Comenzar mi exploración</button>
+    </div>
+  </div>
+</div>
+
+<!-- home.component.html -->
+<section class="home-section">
+  <div class="container">
+    
+    <!-- Libro Destacado (Hero) -->
+    <div class="featured-book">
+      <div class="featured-content">
+        <div class="featured-badge">✨ LIBRO DESTACADO</div>
+        <h1 class="featured-title">{{featuredBook.title}}</h1>
+        <p class="featured-author">por {{featuredBook.author}}</p>
+        <p class="featured-description">{{featuredBook.description}}</p>
+        
+        <div class="featured-stats">
+          <div class="stat">
+            <span class="stat-value">{{featuredBook.stats.readers}}</span>
+            <span class="stat-label">Lectores</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">{{featuredBook.stats.chapters}}</span>
+            <span class="stat-label">Capítulos</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">{{featuredBook.stats.rating}}</span>
+            <span class="stat-label">⭐ Rating</span>
+          </div>
+        </div>
+        
+        <button class="btn btn-primary" (click)="showDemoToast('Comenzar a leer')">Comenzar a leer</button>
+      </div>
+      
+      <div class="featured-cover">
+        <div class="book-cover">
+          <div class="book-spine"></div>
+          <div class="book-pages"></div>
+          <div class="featured-cover-title">La Canción<br>del Búho</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Banner Noticias y Próximo Evento -->
+    <div class="news-event-grid">
+      <!-- Noticias -->
+      <div class="news-panel">
+        <h3 class="panel-title">📰 Noticias de Fukurō</h3>
+        <div class="news-list">
+          <div class="news-item" *ngFor="let news of newsList">
+            <div class="news-tag">{{news.tag}}</div>
+            <div class="news-content">
+              <h4>{{news.title}}</h4>
+              <span>{{news.date}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Banner Evento -->
+      <div class="event-banner">
+        <div class="event-content">
+          <span class="event-badge">PRÓXIMO EVENTO</span>
+          <h2>Gala de Autores Indie</h2>
+          <p>Conecta con editoriales, consigue premios exclusivos y apoya a tus autores de obras de nicho favoritos.</p>
+          <button class="btn btn-outline-light" (click)="showDemoToast('Inscribirse al Evento')">Ver Detalles</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Playlists Destacadas -->
+    <div class="playlists-section">
+      <div class="section-header-left">
+        <h2>🎵 Playlists Destacadas</h2>
+        <p>Acompaña tu lectura con la mejor inmersión musical</p>
+      </div>
+      <div class="playlists-row">
+        <div class="playlist-card" *ngFor="let pl of featuredPlaylists" (click)="showDemoToast('Reproducir Playlist ' + pl.title)">
+          <div class="playlist-cover" [style.background]="pl.cover">
+            <span class="play-icon">▶</span>
+          </div>
+          <div class="playlist-info">
+            <h4 class="pl-title">{{pl.title}}</h4>
+            <p class="pl-author">por {{pl.author}}</p>
+            <span class="pl-tracks">{{pl.tracks}} pistas</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Libros Recientes public publicados (Recomendaciones) -->
+    <div class="recent-books">
+      <div class="section-header-left">
+        <h2>📚 Recomendaciones y Novedades</h2>
+        <p>Descubre las últimas historias añadidas a la comunidad</p>
+      </div>
+      
+      <div class="books-grid">
+        <div class="book-card" *ngFor="let book of recentBooks">
+          <div class="book-cover-small" [style.background]="book.coverColor">
+            <span class="book-genre">{{book.genre}}</span>
+            <span class="new-badge" *ngIf="book.isNew">NUEVO</span>
+          </div>
+          
+          <div class="book-info">
+            <h3 class="recent-book-title">{{book.title}}</h3>
+            <p class="book-author">por {{book.author}}</p>
+            
+            <div class="book-progress">
+              <div class="progress-bar">
+                <div class="progress-fill" [style.width]="book.progress + '%'"></div>
+              </div>
+              <span class="progress-text">{{book.progress}}% leído</span>
+            </div>
+            
+            <div class="book-actions">
+              <button class="btn-read" (click)="showDemoToast('Leer ' + book.title)">Leer</button>
+              <button class="btn-save" (click)="showDemoToast('Guardar en biblioteca')">💾</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</section>

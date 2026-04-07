@@ -1,0 +1,187 @@
+<!-- tasks.component.html -->
+<section class="tasks-section">
+  <div class="container">
+    <div class="section-header">
+      <h2>🪙 Gana Feathers Gratis</h2>
+      <p>Completa tareas diarias y mira anuncios para obtener feathers y apoyar a tus autores favoritos</p>
+    </div>
+    
+    <!-- Saldo y Streak -->
+    <div class="balance-container">
+      <div class="balance-card">
+        <div class="balance-header">
+          <span class="balance-icon">🪶</span>
+          <div>
+            <h3>Tus Feathers</h3>
+            <p class="balance-subtitle">Para regalos y capítulos premium</p>
+          </div>
+        </div>
+        <div class="balance-amount">
+          <span class="amount">{{userFeathers}}</span>
+          <span class="currency">feathers</span>
+        </div>
+        <button class="btn-buy">Comprar más</button>
+      </div>
+      
+      <div class="streak-card">
+        <div class="streak-header">
+          <span class="streak-icon">🔥</span>
+          <div>
+            <h3>Racha Diaria</h3>
+            <p class="streak-subtitle">{{dailyStreak}} días seguidos</p>
+          </div>
+        </div>
+        <div class="streak-calendar">
+          <div class="day" *ngFor="let day of [1,2,3,4,5,6,7]" [class.active]="day <= dailyStreak">
+            D{{day}}
+          </div>
+        </div>
+        <div class="streak-reward">
+          Mañana: +{{10 + (dailyStreak * 5)}} feathers
+        </div>
+      </div>
+    </div>
+    
+    <!-- Tareas Diarias -->
+    <div class="tasks-category">
+      <h3><span class="category-icon">📅</span> Tareas Diarias</h3>
+      <p class="category-description">Resetean cada 24 horas</p>
+      
+      <div class="tasks-grid">
+        <div class="task-card" *ngFor="let task of dailyTasks" [class.completed]="task.completed">
+          <div class="task-icon">{{task.icon}}</div>
+          <div class="task-content">
+            <h4 class="task-title">{{task.title}}</h4>
+            <p class="task-description">{{task.description}}</p>
+          </div>
+          <div class="task-reward">
+            <span class="reward-amount">+{{task.reward}}</span>
+            <span class="reward-icon">🪶</span>
+          </div>
+          <button class="task-action" 
+                  [class.completed]="task.completed"
+                  (click)="completeTask(task)">
+            {{task.completed ? '✅ Completado' : 'Comenzar'}}
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Tareas Semanales -->
+    <div class="tasks-category">
+      <h3><span class="category-icon">📆</span> Tareas Semanales</h3>
+      <p class="category-description">Resetean cada lunes</p>
+      
+      <div class="tasks-grid">
+        <div class="task-card" *ngFor="let task of weeklyTasks" [class.completed]="task.completed">
+          <div class="task-icon">{{task.icon}}</div>
+          <div class="task-content">
+            <h4 class="task-title">{{task.title}}</h4>
+            <p class="task-description">{{task.description}}</p>
+            
+            <div class="task-progress" *ngIf="task.progress !== undefined">
+              <div class="progress-bar">
+                <div class="progress-fill" [style.width]="(task.progress / task.maxProgress!) * 100 + '%'"></div>
+              </div>
+              <span class="progress-text">{{task.progress}}/{{task.maxProgress}}</span>
+            </div>
+          </div>
+          <div class="task-reward">
+            <span class="reward-amount">+{{task.reward}}</span>
+            <span class="reward-icon">🪶</span>
+          </div>
+          <button class="task-action" 
+                  [class.completed]="task.completed"
+                  [disabled]="task.progress !== task.maxProgress"
+                  (click)="completeTask(task)">
+            {{task.completed ? '✅ Reclamado' : 'Reclamar'}}
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Logros -->
+    <div class="tasks-category">
+      <h3><span class="category-icon">🏆</span> Logros</h3>
+      <p class="category-description">Recompensas únicas por hitos</p>
+      
+      <div class="achievements-grid">
+        <div class="achievement-card" *ngFor="let achievement of achievements">
+          <div class="achievement-icon">{{achievement.icon}}</div>
+          <div class="achievement-content">
+            <h4>{{achievement.title}}</h4>
+            <p>{{achievement.description}}</p>
+            
+            <div class="achievement-progress">
+              <div class="progress-bar">
+                <div class="progress-fill" [style.width]="(achievement.progress! / achievement.maxProgress!) * 100 + '%'"></div>
+              </div>
+              <span class="progress-text">{{achievement.progress}}/{{achievement.maxProgress}} ({{((achievement.progress! / achievement.maxProgress!) * 100).toFixed(0)}}%)</span>
+            </div>
+          </div>
+          <div class="achievement-reward">
+            <span class="reward-badge">+{{achievement.reward}} 🪶</span>
+            <button class="btn-claim" [disabled]="achievement.progress !== achievement.maxProgress">
+              {{achievement.progress === achievement.maxProgress ? 'Reclamar' : 'En progreso'}}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Anuncios -->
+    <div class="ads-section">
+      <div class="ads-header">
+        <h3><span class="ads-icon">📺</span> Anuncios Opt-in</h3>
+        <p class="ads-subtitle">Mira anuncios cortos para ganar feathers extra</p>
+      </div>
+      
+      <div class="ads-grid">
+        <div class="ad-card" *ngFor="let ad of adOffers">
+          <div class="ad-header">
+            <div class="ad-category">{{ad.category}}</div>
+            <div class="ad-duration">{{ad.duration}}</div>
+          </div>
+          
+          <div class="ad-content">
+            <h4>{{ad.title}}</h4>
+            <p>{{ad.description}}</p>
+          </div>
+          
+          <div class="ad-footer">
+            <div class="ad-reward">
+              <span class="reward-amount">+{{ad.reward}}</span>
+              <span class="reward-icon">🪶</span>
+            </div>
+            <button class="btn-watch" (click)="watchAd(ad)">
+              <span class="watch-icon">▶️</span> Ver ahora
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Info -->
+    <div class="tasks-info">
+      <div class="info-card">
+        <h4>💡 ¿Para qué sirven los feathers?</h4>
+        <ul>
+          <li>Enviar regalos a tus autores favoritos</li>
+          <li>Desbloquear capítulos premium</li>
+          <li>Acceder a contenido exclusivo</li>
+          <li>Apoyar a creadores emergentes</li>
+        </ul>
+      </div>
+      
+      <div class="info-card">
+        <h4>⚡ Consejos para ganar más</h4>
+        <ul>
+          <li>Mantén tu racha diaria (+5% bonus por día)</li>
+          <li>Completa todas las tareas diarias (+50 bonus)</li>
+          <li>Invita amigos (+100 por amigo que se registre)</li>
+          <li>Revisa los anuncios cada 4 horas</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>

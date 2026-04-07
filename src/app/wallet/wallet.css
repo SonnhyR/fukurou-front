@@ -1,0 +1,84 @@
+.wallet-container {
+  margin: 2rem 0;
+}
+
+.wallet-card {
+  background: linear-gradient(135deg, #5D4037 0%, #8B4513 100%);
+  border-radius: 20px;
+  padding: 2.5rem;
+  color: #FFF8DC;
+  box-shadow: 0 10px 30px rgba(93, 64, 55, 0.2);
+  text-align: center;
+}
+
+.wallet-balance {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.feather-icon {
+  font-size: 2.5rem;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+}
+
+.wallet-balance h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #FFE4B5;
+  margin: 0;
+}
+
+.wallet-subtitle {
+  color: #FFD8B5;
+  font-size: 1rem;
+  opacity: 0.9;
+  margin-bottom: 2.5rem;
+}
+
+.wallet-actions {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+}
+
+.btn {
+  padding: 0.8rem 2rem;
+  border-radius: 25px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.btn-recharge {
+  background: linear-gradient(135deg, #FF9800, #FFB74D);
+  color: #5D4037;
+  box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
+}
+
+.btn-recharge:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 152, 0, 0.4);
+}
+
+.btn-withdraw {
+  background: transparent;
+  color: #FFE4B5;
+  border: 2px solid #FFE4B5;
+}
+
+.btn-withdraw:hover {
+  background: rgba(255, 228, 181, 0.1);
+}
+
+@media (max-width: 600px) {
+  .wallet-actions {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}

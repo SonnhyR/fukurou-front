@@ -1,0 +1,689 @@
+<div class="character-ficha-container">
+  <!-- PASO 0: INTRODUCCIÓN -->
+  <div *ngIf="currentStep === 0" class="intro-step">
+    <div class="intro-card">
+      <div class="intro-icon">{{steps[0].icon}}</div>
+      <h1 class="intro-title">{{steps[0].title}}</h1>
+      <p class="intro-description">{{steps[0].description}}</p>
+      
+      <div class="features">
+        <div class="feature">
+          <span class="feature-icon">🎯</span>
+          <span class="feature-text">Preguntas adaptativas por género</span>
+        </div>
+        <div class="feature">
+          <span class="feature-icon">🔄</span>
+          <span class="feature-text">Camino de creación guiada</span>
+        </div>
+        <div class="feature">
+          <span class="feature-icon">📄</span>
+          <span class="feature-text">Ficha descargable en PDF</span>
+        </div>
+        <div class="feature">
+          <span class="feature-icon">💾</span>
+          <span class="feature-text">Guarda y edita cuando quieras</span>
+        </div>
+      </div>
+      
+      <button class="btn-start" (click)="startQuiz()">
+        <span class="btn-icon">🚀</span>
+        ¡Empezar la creación!
+      </button>
+      
+      <p class="time-estimate">⏱️ Tiempo estimado: 5-10 minutos</p>
+    </div>
+  </div>
+
+  <!-- PASO 1-8: QUIZ ADAPTATIVO -->
+  <div *ngIf="currentStep > 0 && currentStep < 9" class="quiz-container">
+    <!-- Barra de progreso -->
+    <div class="progress-container">
+      <div class="progress-bar">
+        <div class="progress-fill" [style.width]="getProgressPercentage() + '%'"></div>
+      </div>
+      <div class="progress-text">
+        Paso {{currentStep}} de 8 • {{getProgressPercentage().toFixed(0)}}%
+      </div>
+      <div class="progress-steps">
+        <span *ngFor="let step of [1,2,3,4,5,6,7,8]" 
+              [class.active]="step === currentStep"
+              [class.completed]="step < currentStep"
+              class="step-dot"
+              [title]="steps[step].title"></span>
+      </div>
+    </div>
+
+    <!-- Encabezado del paso -->
+    <div class="step-header">
+      <div class="step-icon">{{getCurrentStepIcon()}}</div>
+      <h2 class="step-title">{{getCurrentStepTitle()}}</h2>
+      <p class="step-description">{{getCurrentStepDescription()}}</p>
+    </div>
+
+    <!-- CONTENIDO DINÁMICO POR PASO -->
+    <div class="step-content">
+      <!-- PASO 1: DATOS DE LA OBRA -->
+      <form *ngIf="currentStep === 1" (ngSubmit)="nextStep()" class="step-form" #step1Form="ngForm">
+        <div class="form-group">
+          <label for="obra-titulo">{{getCurrentStepIcon()}} Título de tu obra</label>
+          <input 
+            type="text" 
+            id="obra-titulo" 
+            [(ngModel)]="characterData.obra.titulo"
+            name="titulo"
+            placeholder="Ej: 'La Canción del Búho'"
+            class="form-input"
+            required
+            #tituloInput="ngModel"
+          >
+          <div *ngIf="tituloInput.invalid && tituloInput.touched" class="error-message">
+            Por favor, ingresa un título para tu obra
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>🎭 Género principal</label>
+          <div class="genres-grid">
+            <div 
+              *ngFor="let genre of genres"
+              class="genre-card"
+              [class.selected]="characterData.obra.genero === genre.id"
+              (click)="selectGenre(genre.id)"
+            >
+              <div class="genre-icon" [style.background]="genre.color">
+                {{genre.icon}}
+              </div>
+              <h4>{{genre.name}}</h4>
+            </div>
+          </div>
+        </div>
+
+        <!-- Subgéneros (dinámicos según género seleccionado) -->
+        <div *ngIf="characterData.obra.genero" class="form-group">
+          <label>🎯 Subgénero específico</label>
+          <div class="subgenres-grid">
+            <div 
+              *ngFor="let subgenre of getCurrentSubgenres()"
+              class="subgenre-card"
+              [class.selected]="characterData.obra.subgenero === subgenre.id"
+              (click)="selectSubgenre(subgenre.id)"
+            >
+              <div class="subgenre-icon">{{subgenre.icon}}</div>
+              <span>{{subgenre.name}}</span>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <!-- PASO 2: DATOS BÁSICOS -->
+      <form *ngIf="currentStep === 2" (ngSubmit)="nextStep()" class="step-form" #step2Form="ngForm">
+        <div class="form-group">
+          <label for="nombre">{{getCurrentStepIcon()}} Nombre del personaje</label>
+          <input 
+            type="text" 
+            id="nombre" 
+            [(ngModel)]="characterData.basico.nombre"
+            name="nombre"
+            placeholder="Ej: 'Aeliana Shadowsong'"
+            class="form-input"
+            required
+          >
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="edad">🎂 Edad</label>
+            <input 
+              type="number" 
+              id="edad" 
+              [(ngModel)]="characterData.basico.edad"
+              name="edad"
+              placeholder="27"
+              class="form-input"
+              min="0"
+              max="1000"
+            >
+          </div>
+          
+          <div class="form-group">
+            <label for="genero-personaje">⚧️ Género/Identidad</label>
+            <select 
+              id="genero-personaje" 
+              [(ngModel)]="characterData.basico.genero"
+              name="generoPersonaje"
+              class="form-select"
+            >
+              <option value="" disabled selected>Selecciona una opción</option>
+              <option value="masculino">Masculino</option>
+              <option value="femenino">Femenino</option>
+              <option value="no-binario">No binario</option>
+              <option value="genderfluid">Genderfluid</option>
+              <option value="agenero">Agénero</option>
+              <option value="otro">Otro</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="rol">🎭 Rol en la historia</label>
+          <select 
+            id="rol" 
+            [(ngModel)]="characterData.basico.rol"
+            name="rol"
+            class="form-select"
+          >
+            <option value="" disabled selected>Selecciona un rol</option>
+            <option value="protagonista">Protagonista</option>
+            <option value="antagonista">Antagonista</option>
+            <option value="secundario">Secundario importante</option>
+            <option value="aliado">Aliado</option>
+            <option value="mentor">Mentor</option>
+            <option value="interes-romantico">Interés romántico</option>
+            <option value="villano">Villano</option>
+          </select>
+        </div>
+      </form>
+
+      <!-- PASO 3: PREGUNTAS ESPECÍFICAS DEL GÉNERO -->
+      <form *ngIf="currentStep === 3" (ngSubmit)="nextStep()" class="step-form">
+        <div class="genre-specific-container">
+          <div class="genre-header">
+            <h3 class="genre-title">{{getCurrentStepIcon()}} {{getCurrentStepTitle()}}</h3>
+            <p class="genre-subtitle">{{getCurrentStepDescription()}}</p>
+          </div>
+          
+          <!-- FANTASÍA - ROMANTASY -->
+          <div *ngIf="characterData.obra.genero === 'fantasia' && characterData.obra.subgenero === 'romantasy'" class="genre-questions">
+            <div class="form-group">
+              <label>🩸 ¿Qué tipo de ser es tu personaje?</label>
+              <div class="options-grid">
+                <label class="option-card" *ngFor="let tipo of fantasyRaceTypes">
+                  <input 
+                    type="radio" 
+                    name="tipoSer" 
+                    [value]="tipo.id"
+                    [(ngModel)]="characterData.especifico.tipoSer"
+                  >
+                  <span class="option-icon">{{tipo.icon}}</span>
+                  <span class="option-text">{{tipo.name}}</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>🔮 ¿Cuál es su origen mágico?</label>
+              <select class="form-select" [(ngModel)]="characterData.especifico.origenMagico" name="origenMagico">
+                <option value="" disabled selected>Selecciona una opción</option>
+                <option value="nacimiento">Nacimiento (linaje mágico)</option>
+                <option value="aprendizaje">Aprendizaje (estudió magia)</option>
+                <option value="pacto">Pacto (con entidad superior)</option>
+                <option value="maldicion">Maldición/Don involuntario</option>
+                <option value="objeto">Magia a través de un objeto</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>❤️ Tipo de romance principal</label>
+              <select class="form-select" [(ngModel)]="characterData.especifico.tipoRomance" name="tipoRomance">
+                <option value="" disabled selected>Selecciona un tropo</option>
+                <option value="enemigos-amantes">Enemigos a amantes</option>
+                <option value="amigos-amantes">Amigos a amantes</option>
+                <option value="matrimonio-arreglado">Matrimonio arreglado</option>
+                <option value="amor-prohibido">Amor prohibido</option>
+                <option value="fake-dating">Fake dating</option>
+                <option value="slow-burn">Slow burn</option>
+                <option value="amor-tragico">Amor trágico</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>👑 Contexto social</label>
+              <div class="options-grid">
+                <label class="option-card" *ngFor="let contexto of socialContexts">
+                  <input 
+                    type="radio" 
+                    name="contextoSocial" 
+                    [value]="contexto.id"
+                    [(ngModel)]="characterData.especifico.contextoSocial"
+                  >
+                  <span class="option-icon">{{contexto.icon}}</span>
+                  <span class="option-text">{{contexto.name}}</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- CIENCIA FICCIÓN - CYBERPUNK -->
+          <div *ngIf="characterData.obra.genero === 'sci-fi' && characterData.obra.subgenero === 'cyberpunk'" class="genre-questions">
+            <div class="form-group">
+              <label>🔧 Nivel de mejoras cibernéticas</label>
+              <select class="form-select" [(ngModel)]="characterData.especifico.nivelImplantes" name="nivelImplantes">
+                <option value="" disabled selected>Selecciona nivel</option>
+                <option value="basico">Básico (implantes necesarios)</option>
+                <option value="moderado">Moderado (mejoras de combate)</option>
+                <option value="avanzado">Avanzado (transhumanismo)</option>
+                <option value="puro">Puro (sin mejoras, raro)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>🏢 ¿Para quién trabaja?</label>
+              <div class="options-grid">
+                <label class="option-card" *ngFor="let corporacion of corporations">
+                  <input 
+                    type="radio" 
+                    name="corporacion" 
+                    [value]="corporacion.id"
+                    [(ngModel)]="characterData.especifico.corporacion"
+                  >
+                  <span class="option-icon">{{corporacion.icon}}</span>
+                  <span class="option-text">{{corporacion.name}}</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- SI NO HAY PREGUNTAS ESPECÍFICAS -->
+          <div *ngIf="!hasGenreSpecificQuestions()" class="no-specific-questions">
+            <div class="no-questions-card">
+              <span class="icon">✨</span>
+              <p>{{getCurrentStepDescription()}}</p>
+              <small>No hay preguntas específicas para esta combinación de género.</small>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <!-- PASO 4: APARIENCIA -->
+      <form *ngIf="currentStep === 4" (ngSubmit)="nextStep()" class="step-form">
+        <div class="step-header-inline">
+          <span class="step-icon-small">{{getCurrentStepIcon()}}</span>
+          <h4>{{getCurrentStepTitle()}}</h4>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="altura">📏 Altura (cm)</label>
+            <input 
+              type="number" 
+              id="altura" 
+              [(ngModel)]="characterData.apariencia.altura"
+              name="altura"
+              placeholder="175"
+              class="form-input"
+              min="50"
+              max="300"
+            >
+          </div>
+          
+          <div class="form-group">
+            <label for="complexion">💪 Complexión</label>
+            <select 
+              id="complexion" 
+              [(ngModel)]="characterData.apariencia.complexion"
+              name="complexion"
+              class="form-select"
+            >
+              <option value="" disabled selected>Selecciona</option>
+              <option value="delgada">Delgada</option>
+              <option value="atletica">Atlética</option>
+              <option value="media">Media</option>
+              <option value="robusta">Robusta</option>
+              <option value="corpulenta">Corpulenta</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="ojos">👁️ Color de ojos</label>
+            <input 
+              type="text" 
+              id="ojos" 
+              [(ngModel)]="characterData.apariencia.ojos"
+              name="ojos"
+              placeholder="Ej: 'Verdes como esmeralda'"
+              class="form-input"
+            >
+          </div>
+          
+          <div class="form-group">
+            <label for="cabello">💇 Color y tipo de cabello</label>
+            <input 
+              type="text" 
+              id="cabello" 
+              [(ngModel)]="characterData.apariencia.cabello"
+              name="cabello"
+              placeholder="Ej: 'Negro, largo y ondulado'"
+              class="form-input"
+            >
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="rasgos">🎭 Rasgos distintivos</label>
+          <textarea 
+            id="rasgos" 
+            [(ngModel)]="characterData.apariencia.rasgos"
+            name="rasgos"
+            placeholder="Cicatrices, tatuajes, marcas de nacimiento, gestos característicos..."
+            class="form-textarea"
+            rows="3"
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="estilo">👕 Estilo de vestir</label>
+          <textarea 
+            id="estilo" 
+            [(ngModel)]="characterData.apariencia.estilo"
+            name="estilo"
+            placeholder="¿Cómo suele vestir? ¿Tiene un estilo característico?"
+            class="form-textarea"
+            rows="2"
+          ></textarea>
+        </div>
+      </form>
+
+      <!-- PASO 5: PERSONALIDAD -->
+      <form *ngIf="currentStep === 5" (ngSubmit)="nextStep()" class="step-form">
+        <div class="step-header-inline">
+          <span class="step-icon-small">{{getCurrentStepIcon()}}</span>
+          <h4>{{getCurrentStepTitle()}}</h4>
+        </div>
+
+        <div class="form-group">
+          <label for="personalidad-tipo">🧠 Tipo de personalidad</label>
+          <select 
+            id="personalidad-tipo" 
+            [(ngModel)]="characterData.personalidad.tipo"
+            name="personalidadTipo"
+            class="form-select"
+          >
+            <option value="" disabled selected>Selecciona un arquetipo</option>
+            <option value="heroe">Héroe/Heroína</option>
+            <option value="antiheroe">Antihéroe</option>
+            <option value="villano">Villano/Villana</option>
+            <option value="mentor">Mentor</option>
+            <option value="trickster">Trickster/Bufón</option>
+            <option value="guardian">Guardián</option>
+            <option value="explorador">Explorador</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="virtudes">⭐ Virtudes principales</label>
+            <textarea 
+              id="virtudes" 
+              [(ngModel)]="characterData.personalidad.virtudes"
+              name="virtudes"
+              placeholder="Valiente, leal, inteligente..."
+              class="form-textarea"
+              rows="2"
+            ></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label for="defectos">💔 Defectos principales</label>
+            <textarea 
+              id="defectos" 
+              [(ngModel)]="characterData.personalidad.defectos"
+              name="defectos"
+              placeholder="Impulsivo, orgulloso, desconfiado..."
+              class="form-textarea"
+              rows="2"
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="miedos">😨 Miedos más profundos</label>
+          <textarea 
+            id="miedos" 
+            [(ngModel)]="characterData.personalidad.miedos"
+            name="miedos"
+            placeholder="¿A qué le teme? ¿Qué lo aterroriza?"
+            class="form-textarea"
+            rows="2"
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="motivacion">🎯 Motivación principal</label>
+          <textarea 
+            id="motivacion" 
+            [(ngModel)]="characterData.personalidad.motivacion"
+            name="motivacion"
+            placeholder="¿Qué lo impulsa a actuar? ¿Cuál es su objetivo?"
+            class="form-textarea"
+            rows="2"
+          ></textarea>
+        </div>
+      </form>
+
+      <!-- PASO 6: HISTORIA -->
+      <form *ngIf="currentStep === 6" (ngSubmit)="nextStep()" class="step-form">
+        <div class="step-header-inline">
+          <span class="step-icon-small">{{getCurrentStepIcon()}}</span>
+          <h4>{{getCurrentStepTitle()}}</h4>
+        </div>
+
+        <div class="form-group">
+          <label for="origen">🌍 Origen del personaje</label>
+          <textarea 
+            id="origen" 
+            [(ngModel)]="characterData.historia.origen"
+            name="origen"
+            placeholder="¿De dónde viene? ¿Dónde nació y creció?"
+            class="form-textarea"
+            rows="3"
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="eventoClave">⚡ Evento clave en su vida</label>
+          <textarea 
+            id="eventoClave" 
+            [(ngModel)]="characterData.historia.eventoClave"
+            name="eventoClave"
+            placeholder="¿Qué suceso marcó un antes y después en su vida?"
+            class="form-textarea"
+            rows="3"
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="relaciones">👨‍👩‍👧‍👦 Relaciones familiares</label>
+          <textarea 
+            id="relaciones" 
+            [(ngModel)]="characterData.historia.relaciones"
+            name="relaciones"
+            placeholder="¿Quiénes son sus familiares? ¿Qué relación tiene con ellos?"
+            class="form-textarea"
+            rows="2"
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="secretos">🤫 Secretos del personaje</label>
+          <textarea 
+            id="secretos" 
+            [(ngModel)]="characterData.historia.secretos"
+            name="secretos"
+            placeholder="¿Qué secretos oculta? ¿Qué no sabe nadie sobre él/ella?"
+            class="form-textarea"
+            rows="2"
+          ></textarea>
+        </div>
+      </form>
+
+      <!-- PASO 7: HABILIDADES -->
+      <form *ngIf="currentStep === 7" (ngSubmit)="nextStep()" class="step-form">
+        <div class="step-header-inline">
+          <span class="step-icon-small">{{getCurrentStepIcon()}}</span>
+          <h4>{{getCurrentStepTitle()}}</h4>
+        </div>
+
+        <div class="form-group">
+          <label for="naturales">🌟 Habilidades naturales</label>
+          <textarea 
+            id="naturales" 
+            [(ngModel)]="characterData.habilidades.naturales"
+            name="naturales"
+            placeholder="¿Qué habilidades tiene de forma innata? (Ej: buena memoria, fuerza física...)"
+            class="form-textarea"
+            rows="2"
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="aprendidas">📚 Habilidades aprendidas</label>
+          <textarea 
+            id="aprendidas" 
+            [(ngModel)]="characterData.habilidades.aprendidas"
+            name="aprendidas"
+            placeholder="¿Qué ha aprendido a lo largo de su vida? (Estudios, entrenamiento...)"
+            class="form-textarea"
+            rows="2"
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="especiales">✨ Habilidades especiales/poderes</label>
+          <textarea 
+            id="especiales" 
+            [(ngModel)]="characterData.habilidades.especiales"
+            name="especiales"
+            placeholder="¿Tiene poderes mágicos, habilidades sobrehumanas o talentos únicos?"
+            class="form-textarea"
+            rows="2"
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="limitaciones">🚫 Limitaciones</label>
+          <textarea 
+            id="limitaciones" 
+            [(ngModel)]="characterData.habilidades.limitaciones"
+            name="limitaciones"
+            placeholder="¿Qué no puede hacer? ¿Cuáles son sus debilidades o limitaciones?"
+            class="form-textarea"
+            rows="2"
+          ></textarea>
+        </div>
+      </form>
+
+      <!-- PASO 8: RELACIONES -->
+      <form *ngIf="currentStep === 8" (ngSubmit)="nextStep()" class="step-form">
+        <div class="step-header-inline">
+          <span class="step-icon-small">{{getCurrentStepIcon()}}</span>
+          <h4>{{getCurrentStepTitle()}}</h4>
+        </div>
+
+        <div class="form-group">
+          <label for="aliados">🤝 Aliados y amigos</label>
+          <textarea 
+            id="aliados" 
+            [(ngModel)]="characterData.relaciones.aliados"
+            name="aliados"
+            placeholder="¿Quiénes son sus aliados? ¿Quién lo/la apoya?"
+            class="form-textarea"
+            rows="2"
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="enemigos">⚔️ Enemigos y rivales</label>
+          <textarea 
+            id="enemigos" 
+            [(ngModel)]="characterData.relaciones.enemigos"
+            name="enemigos"
+            placeholder="¿Quiénes se oponen a él/ella? ¿Tiene rivales?"
+            class="form-textarea"
+            rows="2"
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="romance">❤️ Intereses románticos</label>
+          <textarea 
+            id="romance" 
+            [(ngModel)]="characterData.relaciones.romance"
+            name="romance"
+            placeholder="¿Tiene interés en alguien? ¿Hay una relación romántica?"
+            class="form-textarea"
+            rows="2"
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="familia">🏠 Familia</label>
+          <textarea 
+            id="familia" 
+            [(ngModel)]="characterData.relaciones.familia"
+            name="familia"
+            placeholder="¿Cómo es su situación familiar actual?"
+            class="form-textarea"
+            rows="2"
+          ></textarea>
+        </div>
+      </form>
+    </div>
+
+    <!-- Navegación -->
+    <div class="step-navigation">
+      <button class="btn-prev" *ngIf="currentStep > 1" (click)="prevStep()">
+        ← Anterior
+      </button>
+      
+      <div class="step-info">
+        <span class="current-step">Paso {{currentStep}}/8</span>
+        <span class="step-name">{{getCurrentStepTitle()}}</span>
+      </div>
+      
+      <button class="btn-next" (click)="nextStep()" [disabled]="!canProceed()">
+        {{currentStep === 8 ? 'Finalizar' : 'Siguiente →'}}
+      </button>
+    </div>
+  </div>
+
+  <!-- PASO 9: VISTA PREVIA Y DESCARGA -->
+  <div *ngIf="currentStep === 9" class="preview-step">
+    <div class="preview-container">
+      <div class="preview-header">
+        <div class="preview-icon">{{steps[9].icon}}</div>
+        <h1 class="preview-title">{{steps[9].title}}</h1>
+        <p class="preview-description">{{steps[9].description}}</p>
+      </div>
+
+      <!-- VISTA PREVIA DE LA FICHA EN PDF -->
+      <div class="ficha-preview-pdf" *ngIf="pdfPreviewUrl">
+        <iframe [src]="pdfPreviewUrl" width="100%" height="800px" style="border: none; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);"></iframe>
+      </div>
+
+      <!-- ACCIONES FINALES -->
+      <div class="preview-actions">
+        <button class="btn-action btn-download" (click)="downloadPDF()">
+          <span class="btn-icon">📥</span>
+          Descargar Ficha (PDF)
+        </button>
+        
+        <button class="btn-action btn-edit" (click)="goToStep(1)">
+          <span class="btn-icon">✏️</span>
+          Editar Ficha
+        </button>
+        
+        <button class="btn-action btn-share" (click)="shareFicha()">
+          <span class="btn-icon">📤</span>
+          Compartir
+        </button>
+        
+        <button class="btn-action btn-new" (click)="resetQuiz()">
+          <span class="btn-icon">🔄</span>
+          Crear Otro
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
