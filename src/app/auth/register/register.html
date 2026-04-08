@@ -1,26 +1,44 @@
+<!-- src/app/register/register.html -->
 <div class="auth-container">
   <div class="auth-box">
     <div class="auth-header">
       <h2>Crear Cuenta</h2>
       <p>Únete a nuestra comunidad narrativa</p>
     </div>
-    <form class="auth-form">
+
+    <!-- Mensaje de éxito -->
+    <div *ngIf="successMessage" class="alert alert-success">
+      {{ successMessage }}
+    </div>
+
+    <!-- Mensaje de error -->
+    <div *ngIf="errorMessage" class="alert alert-error">
+      {{ errorMessage }}
+    </div>
+
+    <form class="auth-form" (ngSubmit)="onSubmit()">
       <div class="form-group">
         <label>Nombre de Usuario</label>
-        <input type="text" placeholder="Tu seudónimo">
+        <input type="text" placeholder="Tu seudónimo" [(ngModel)]="formData.username" name="username" required>
       </div>
+
       <div class="form-group">
         <label>Correo Electrónico</label>
-        <input type="email" placeholder="tu@correo.com">
+        <input type="email" placeholder="tu@correo.com" [(ngModel)]="formData.email" name="email" required>
       </div>
+
       <div class="form-group">
         <label>Contraseña</label>
-        <input type="password" placeholder="••••••••">
+        <input type="password" placeholder="••••••••" [(ngModel)]="formData.password" name="password" required>
       </div>
+
       <div class="auth-actions">
-        <button type="button" class="btn-block">Registrarse</button>
+        <button type="submit" class="btn-block" [disabled]="isLoading">
+          {{ isLoading ? 'Registrando...' : 'Registrarse' }}
+        </button>
       </div>
     </form>
+
     <div class="auth-footer">
       <p>¿Ya tienes cuenta? <a routerLink="/login">Inicia Sesión</a></p>
     </div>
