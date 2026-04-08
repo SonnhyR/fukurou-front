@@ -19,7 +19,7 @@ export interface RegisterResponse {
 })
 export class RegisterService {
     // 🔴 CAMBIA ESTA URL por la que te dio Railway
-    private apiUrl = 'https://fukurou-back-production.up.railway.app';
+    private apiUrl = 'https://fukurou-back-production.up.railway.app/api';
 
     constructor(private http: HttpClient) { }
 
